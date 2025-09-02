@@ -1,7 +1,7 @@
-import express from "express";
-import bodyParser from "body-parser";
-import cors from "cors";
-import pool from "./db";
+const express = require("express");
+const bodyParser = require("body-parser");
+const cors = require("cors");
+const pool = require("./db")?.default ?? require("./db");
 
 const app = express();
 const PORT = 3001;
@@ -9,7 +9,7 @@ const PORT = 3001;
 app.use(cors());
 app.use(bodyParser.json());
 
-app.post("/api/cadastrar", async (req, res) => {
+app.post("/api/cadastrar", async (req: import("express").Request, res: import("express").Response) => {
   const { nome, email, senha } = req.body;
 
   if (!nome || !email || !senha) {
@@ -32,7 +32,6 @@ app.post("/api/cadastrar", async (req, res) => {
         .json({ mensagem: "E-mail já cadastrado. Por favor, use outro." });
     }
 
-    // Em um projeto real, você faria o hash da senha aqui antes de salvar!
     const [result] = await connection.execute(
       "INSERT INTO usuarios (nome, email, senha) VALUES (?, ?, ?)",
       [nome, email, senha]

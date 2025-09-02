@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import "./CadastroForm.css";
 
 const CadastroForm = () => {
   const [formData, setFormData] = useState({
@@ -44,7 +45,7 @@ const CadastroForm = () => {
 
   return (
     <div className="cadastro-container">
-      <h2>Tela de Cadastro</h2>
+      <h2>Cadastre-se</h2>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label htmlFor="nome">Nome</label>
