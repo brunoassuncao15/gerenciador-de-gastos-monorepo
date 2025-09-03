@@ -27,7 +27,6 @@ app.post("/api/cadastrar", async (req, res) => {
                 .status(409)
                 .json({ mensagem: "E-mail já cadastrado. Por favor, use outro." });
         }
-        // Em um projeto real, você faria o hash da senha aqui antes de salvar!
         const [result] = await connection.execute("INSERT INTO usuarios (nome, email, senha) VALUES (?, ?, ?)", [nome, email, senha]);
         console.log(`Usuário "${nome}" cadastrado com ID: ${result.insertId}`);
         res.status(201).json({
