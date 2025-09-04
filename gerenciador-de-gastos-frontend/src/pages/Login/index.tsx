@@ -31,12 +31,12 @@ const LoginForm = () => {
       if (response.ok) {
         navigate("/gestao", { state: { nome: data.usuario?.nome || "Usuário" } });
         setFormData({ email: "", senha: "" });
-        alert(data.mensagem);
+        // alert(data.mensagem);
       } else {
         alert("Erro: " + data.mensagem);
       }
     } catch (error) {
-      console.error("Erro ao enviar dados:", error);
+      // console.error("Erro ao enviar dados:", error);
       alert(error);
     }
   };

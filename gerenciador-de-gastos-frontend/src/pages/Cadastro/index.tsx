@@ -38,8 +38,7 @@ const CadastroForm = () => {
         alert("Erro: " + data.mensagem);
       }
     } catch (error) {
-      console.error("Erro ao enviar dados:", error);
-      alert("Ocorreu um erro ao tentar se conectar com o servidor.");
+      alert("Ocorreu um erro ao tentar se cadastrar, tente novamente mais tarde.");
     }
   };
 
