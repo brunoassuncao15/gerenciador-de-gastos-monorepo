@@ -1,10 +1,13 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const LoginForm = () => {
   const [formData, setFormData] = useState({
     email: "",
     senha: "",
   });
+
+  const navigate = useNavigate();
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -26,21 +29,21 @@ const LoginForm = () => {
       const data = await response.json();
 
       if (response.ok) {
-        alert(data.mensagem);
-        console.log("Dados do usuário:", data.usuario);
+        navigate("/gestao", { state: { nome: data.usuario?.nome || "Usuário" } });
         setFormData({ email: "", senha: "" });
+        alert(data.mensagem);
       } else {
         alert("Erro: " + data.mensagem);
       }
     } catch (error) {
       console.error("Erro ao enviar dados:", error);
-      alert("Ocorreu um erro ao tentar se conectar com o servidor.");
+      alert(error);
     }
   };
 
   return (
-    <div className="login-container">
-      <h2>Tela de Login</h2>
+    <div className="cadastro-container">
+      <h2>Conectar</h2>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label htmlFor="email">Email</label>
@@ -66,6 +69,8 @@ const LoginForm = () => {
         </div>
         <button type="submit">Entrar</button>
       </form>
+      <br />
+      <a href="/cadastro">Não tem uma conta? Cadastre-se</a>
     </div>
   );
 };

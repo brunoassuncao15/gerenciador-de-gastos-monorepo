@@ -1,21 +1,24 @@
-import CadastroForm from "./pages/Cadastro";
-import LoginForm from "./pages/Login";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import LoginForm from "./pages/login/index";
+import CadastroForm from "./pages/cadastro/index";
+import Home from "./pages/home";
 import "./pages/Cadastro/index.css";
 import "./App.css";
-import { useState } from "react";
+
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-
   return (
-    <div className="app">
-      <h1>Gerenciador de Gastos</h1>
-      <button onClick={() => setIsLoggedIn(!isLoggedIn)}>
-        {isLoggedIn ? "Ir para Cadastro" : "Ir para Login"}
-      </button>
-      <hr />
-      {isLoggedIn ? <LoginForm /> : <CadastroForm />}
-    </div>
+    <Router>
+      <div className="app">
+        <h1>Gerenciador de Gastos</h1>
+        <hr />
+        <Routes>
+          <Route path="/" element={<><LoginForm /></>} />
+          <Route path="/cadastro" element={<CadastroForm />} />
+          <Route path="/gestao" element={<Home />} />
+        </Routes>
+      </div>
+    </Router>
   );
 }
 

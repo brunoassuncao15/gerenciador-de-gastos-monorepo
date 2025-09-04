@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "./CadastroForm.css";
+import "./index.css";
 
 const CadastroForm = () => {
   const [formData, setFormData] = useState({
@@ -82,6 +82,8 @@ const CadastroForm = () => {
         </div>
         <button type="submit">Cadastrar</button>
       </form>
+      <br />
+      <a href="/">Já tem uma conta? Faça login</a>
     </div>
   );
 };

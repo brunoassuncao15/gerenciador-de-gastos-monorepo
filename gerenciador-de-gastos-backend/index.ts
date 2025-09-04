@@ -34,12 +34,12 @@ app.post("/api/cadastrar", async (req: Request, res: Response) => {
         .json({ mensagem: "E-mail já cadastrado. Por favor, use outro." });
     }
 
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(senha, salt);
+    // const salt = await bcrypt.genSalt(10);
+    // const hashedPassword = await bcrypt.hash(senha, salt);
 
     const [result]: [any, any] = await connection.execute(
       "INSERT INTO usuarios (nome, email, senha) VALUES (?, ?, ?)",
-      [nome, email, hashedPassword]
+      [nome, email, senha]
     );
 
     console.log(`Usuário "${nome}" cadastrado com ID: ${result.insertId}`);
@@ -81,9 +81,7 @@ app.post("/api/login", async (req, res) => {
       return res.status(401).json({ mensagem: "Credenciais inválidas." });
     }
 
-    const isMatch = await bcrypt.compare(senha, user.senha);
-
-    if (!isMatch) {
+    if (String(senha).trim() !== String(user.senha).trim()) {
       return res.status(401).json({ mensagem: "Credenciais inválidas." });
     }
 

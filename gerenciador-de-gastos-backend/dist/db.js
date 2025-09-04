@@ -17,19 +17,15 @@ const dbConfig = {
     queueLimit: 0,
 };
 const pool = promise_1.default.createPool(dbConfig);
-// pool
-//   .getConnection()
-//   .then((connection) => {
-//     console.log(
-//       `Conexão MySQL OK em ${dbConfig.host}:${dbConfig.port} como usuário ${dbConfig.user}`
-//     );
-//     connection.release();
-//   })
-//   .catch((err) => {
-//     console.error("Erro ao conectar ao banco de dados:", err?.message || err);
-//     console.error(
-//       "Verifique as variáveis de ambiente DB_HOST, DB_USER, DB_PASSWORD, DB_NAME e privilégios do usuário."
-//     );
-//     process.exit(1);
-//   });
+pool
+    .getConnection()
+    .then((connection) => {
+    console.log(`Conexão MySQL OK em ${dbConfig.host}:${dbConfig.port} como usuário ${dbConfig.user}`);
+    connection.release();
+})
+    .catch((err) => {
+    console.error("Erro ao conectar ao banco de dados:", (err === null || err === void 0 ? void 0 : err.message) || err);
+    console.error("Verifique as variáveis de ambiente DB_HOST, DB_USER, DB_PASSWORD, DB_NAME e privilégios do usuário.");
+    process.exit(1);
+});
 exports.default = pool;
