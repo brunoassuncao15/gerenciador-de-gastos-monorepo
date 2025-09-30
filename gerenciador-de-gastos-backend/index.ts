@@ -100,6 +100,40 @@ app.post("/api/login", async (req, res) => {
   }
 });
 
+app.post("/api/transacao", async (req: Request, res: Response) => {
+  const { usuarioId, tipo, valor, descricao, data } = req.body;
+
+  if (
+  usuarioId === undefined ||
+  usuarioId === null ||
+  !tipo ||
+  !valor ||
+  !descricao ||
+  !data
+) {
+  return res.status(400).json({ mensagem: "Todos os campos são obrigatórios." });
+}
+
+  let connection: any;
+  try {
+    connection = await pool.getConnection();
+
+    await connection.execute(
+      "INSERT INTO transacoes (usuario_id, tipo, valor, descricao, data) VALUES (?, ?, ?, ?, ?)",
+      [usuarioId, tipo, valor, descricao, data]
+    );
+
+    res.status(201).json({ mensagem: "Transação registrada com sucesso!" });
+  } catch (error) {
+    console.error("Erro ao registrar transação:", error);
+    res.status(500).json({ mensagem: "Erro interno no servidor." });
+  } finally {
+    if (connection) {
+      connection.release();
+    }
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`Servidor rodando em http://localhost:${PORT}`);
 });
