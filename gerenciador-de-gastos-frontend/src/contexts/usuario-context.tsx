@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, use, useContext, useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
@@ -33,9 +33,9 @@ interface UsuarioContextType {
 const UsuarioContext = createContext<UsuarioContextType>({} as UsuarioContextType);
 
 export const UsuarioProvider = ({ children }: { children: ReactNode }) => {
-      const location = useLocation();
-  const { nome } = location.state || { nome: "Usuário" };
-const [usuario, setUsuario] = useState<Usuario | null>(null);
+  const location = useLocation();
+  const { nome, id } = location.state || { nome: "Usuário", id: 0 };
+  const [usuario, setUsuario] = useState<Usuario | null>(null);
   const [transacao, setTransacao] = useState({
     usuarioId: 0,
     tipo: "entrada",
@@ -71,7 +71,7 @@ const [usuario, setUsuario] = useState<Usuario | null>(null);
       const data = await response.json();
 
       if (response.ok) {
-        navigate("/gestao", { state: { nome: data.usuario?.nome || "Usuário" } });
+    navigate("/gestao", { state: { nome: data.usuario?.nome || "Usuário", id: data.usuario?.id || 0, email: data.usuario?.email || "" } });
         setLoginFormData({ email: "", senha: "" });
         setTransacao({ ...transacao, usuarioId: data.usuario?.id });
       } else {
@@ -82,6 +82,11 @@ const [usuario, setUsuario] = useState<Usuario | null>(null);
     }
   };
 
+  useEffect(() => {
+    if (id) {
+      setTransacao({ ...transacao, usuarioId: id });
+    }
+  }, [id]);
 
   const handleSaveTransacao = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
