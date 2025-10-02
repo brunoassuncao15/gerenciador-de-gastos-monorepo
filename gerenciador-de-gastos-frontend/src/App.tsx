@@ -11,16 +11,16 @@ function App() {
   return (
     <Router>
         <UsuarioProvider>
-        <div className="app">
-          <h1>Gerenciador de Gastos</h1>
-          <hr />
-          <Routes>
-            <Route path="/" element={<><LoginForm /></>} />
-            <Route path="/cadastro" element={<CadastroForm />} />
-            <Route path="/gestao" element={<Home />} />
-          </Routes>
-        </div>
-    </UsuarioProvider>
+          <div className="app">
+            <h1>Gerenciador de Gastos</h1>
+            <hr />
+            <Routes>
+              <Route path="/" element={<><LoginForm /></>} />
+              <Route path="/cadastro" element={<CadastroForm />} />
+              <Route path="/gestao" element={<Home />} />
+            </Routes>
+          </div>
+        </UsuarioProvider>
       </Router>
   );
 }
