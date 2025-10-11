@@ -44,8 +44,6 @@ export const UsuarioProvider = ({ children }: { children: ReactNode }) => {
     data: "",
   });
 
-  console.log("ID do usuário no contexto:", id);
-
    const [loginFormData, setLoginFormData] = useState({
     email: "",
     senha: "",
