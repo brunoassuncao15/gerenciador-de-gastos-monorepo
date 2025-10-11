@@ -94,7 +94,13 @@ app.post("/api/transacao", async (req, res) => {
     let connection;
     try {
         connection = await db_1.default.getConnection();
-        await connection.execute("INSERT INTO transacoes (usuario_id, tipo, valor, descricao, data) VALUES (?, ?, ?, ?, ?)", [usuarioId, tipo, valor, descricao, data]);
+        const [userRows] = await connection.execute("SELECT nome FROM usuarios WHERE id = ?", [usuarioId]);
+        if (userRows.length === 0) {
+            return res.status(404).json({ mensagem: "Usuário não encontrado." });
+        }
+        const nomeUsuario = userRows[0].nome;
+        await connection.execute("INSERT INTO transacoes (usuario_id, nome_usuario, tipo, valor, descricao, data) VALUES (?, ?, ?, ?, ?, ?)", [usuarioId, nomeUsuario, tipo, valor, descricao, data]);
+        console.log(`Transação registrada para o usuário ID: ${usuarioId}`);
         res.status(201).json({ mensagem: "Transação registrada com sucesso!" });
     }
     catch (error) {

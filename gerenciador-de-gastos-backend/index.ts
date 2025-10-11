@@ -103,26 +103,36 @@ app.post("/api/login", async (req, res) => {
 app.post("/api/transacao", async (req: Request, res: Response) => {
   const { usuarioId, tipo, valor, descricao, data } = req.body;
 
-  if (
-  usuarioId === undefined ||
-  usuarioId === null ||
-  !tipo ||
-  !valor ||
-  !descricao ||
-  !data
-) {
-  return res.status(400).json({ mensagem: "Todos os campos são obrigatórios." });
-}
+ if (
+    usuarioId === undefined ||
+    usuarioId === null ||
+    !tipo ||
+    !valor ||
+    !descricao ||
+    !data
+  ) {
+    return res.status(400).json({ mensagem: "Todos os campos são obrigatórios." });
+  }
 
   let connection: any;
   try {
     connection = await pool.getConnection();
 
+    const [userRows]: [any[], any] = await connection.execute(
+      "SELECT nome FROM usuarios WHERE id = ?",
+      [usuarioId]
+    );
+    if (userRows.length === 0) {
+      return res.status(404).json({ mensagem: "Usuário não encontrado." });
+    }
+    const nomeUsuario = userRows[0].nome;
+
     await connection.execute(
-      "INSERT INTO transacoes (usuario_id, tipo, valor, descricao, data) VALUES (?, ?, ?, ?, ?)",
-      [usuarioId, tipo, valor, descricao, data]
+      "INSERT INTO transacoes (usuario_id, nome_usuario, tipo, valor, descricao, data) VALUES (?, ?, ?, ?, ?, ?)",
+      [usuarioId, nomeUsuario, tipo, valor, descricao, data]
     );
 
+    console.log(`Transação registrada para o usuário ID: ${usuarioId}`);
     res.status(201).json({ mensagem: "Transação registrada com sucesso!" });
   } catch (error) {
     console.error("Erro ao registrar transação:", error);

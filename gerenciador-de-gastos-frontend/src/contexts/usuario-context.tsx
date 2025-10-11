@@ -44,6 +44,8 @@ export const UsuarioProvider = ({ children }: { children: ReactNode }) => {
     data: "",
   });
 
+  console.log("ID do usuário no contexto:", id);
+
    const [loginFormData, setLoginFormData] = useState({
     email: "",
     senha: "",
@@ -105,7 +107,7 @@ export const UsuarioProvider = ({ children }: { children: ReactNode }) => {
       if (response.ok) {
         alert("Transação adicionada com sucesso!");
         setTransacao({
-          usuarioId: 0,
+          usuarioId: id,
           tipo: "entrada",
           descricao: "",
           valor: 0,
