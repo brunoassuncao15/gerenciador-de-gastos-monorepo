@@ -1,0 +1,67 @@
+/* ...existing code... */
+
+.transacoes-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 24px;
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  font-size: 1rem;
+}
+
+.transacoes-table th, .transacoes-table td {
+  padding: 16px 12px;
+  text-align: left;
+}
+
+.transacoes-table th {
+  background: #f5f7fa;
+  color: #222;
+  font-weight: 600;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.transacoes-table tr {
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.transacoes-table tr:last-child {
+  border-bottom: none;
+}
+
+.transacoes-table td {
+  color: #222;
+}
+
+.transacoes-table tr:nth-child(even) {
+  background: #f8fafc;
+}
+
+.transacoes-table tr:hover {
+  background: #e0edff;
+  transition: background 0.2s;
+}
+
+/* Responsivo */
+@media (max-width: 700px) {
+  .transacoes-table, .transacoes-table thead, .transacoes-table tbody, .transacoes-table th, .transacoes-table td, .transacoes-table tr {
+    display: block;
+  }
+  .transacoes-table th {
+    display: none;
+  }
+  .transacoes-table td {
+    padding: 12px;
+    border-bottom: 1px solid #e5e7eb;
+    position: relative;
+  }
+  .transacoes-table td:before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: #555;
+    display: block;
+    margin-bottom: 4px;
+  }
+}

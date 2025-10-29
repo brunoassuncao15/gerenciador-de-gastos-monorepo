@@ -1,10 +1,18 @@
 
+import { useNavigate } from "react-router-dom";
 import { useUsuario } from "../../contexts/usuario-context";
 import "./styles.css";
 
 
 const Home = () => {
 const { nome, transacao, setTransacao, handleSaveTransacao } = useUsuario();
+const navigate = useNavigate();
+
+  const handleVerTransacoes = () => {
+    navigate("/lista-de-transacoes", {
+      state: { nome, id: transacao.usuarioId }
+    });
+  };
 
   return (
     <div className="home-container">
@@ -38,6 +46,12 @@ const { nome, transacao, setTransacao, handleSaveTransacao } = useUsuario();
         </div>
 
         <button type="submit">Adicionar</button>
+        <button
+          type="button"
+          onClick={handleVerTransacoes}
+        >
+          Ver lista de transações
+        </button>
       </form>
     </div>
   );

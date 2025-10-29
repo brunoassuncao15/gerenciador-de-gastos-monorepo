@@ -5,6 +5,7 @@ import Home from "./pages/home";
 import "./pages/Cadastro/index.css";
 import "./App.css";
 import { UsuarioProvider } from "./contexts/usuario-context";
+import ListaTransacoes from "./pages/listaTransacoes";
 
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
               <Route path="/" element={<><LoginForm /></>} />
               <Route path="/cadastro" element={<CadastroForm />} />
               <Route path="/gestao" element={<Home />} />
+              <Route path="/lista-de-transacoes" element={<ListaTransacoes />} />
             </Routes>
           </div>
         </UsuarioProvider>

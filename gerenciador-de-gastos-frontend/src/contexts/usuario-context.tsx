@@ -1,11 +1,21 @@
-import { createContext, use, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { buscarTransacoes, loginUsuario, salvarTransacao } from '../service/services';
+import { useQuery } from '@tanstack/react-query';
 
 interface Usuario {
     id: string;
     nome: string;
     email: string;
+}
+
+interface Transacao {
+    usuarioId: number;
+    tipo: string;
+    descricao: string;
+    valor: number;
+    data: string;
 }
 
 interface UsuarioContextType {
@@ -14,20 +24,15 @@ interface UsuarioContextType {
     nome: string;
     handleLogin: (event: React.FormEvent<HTMLFormElement>) => Promise<void>;
     handleInputChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-    transacao: {
-        usuarioId: number;
-        tipo: string;
-        valor: number;
-        descricao: string;
-        data: string;
-    };
-    setTransacao: (transacao: { usuarioId: number; tipo: string; descricao: string; valor: number; data: string; }) => void;
+    transacao: Transacao;
+    setTransacao: (transacao: Transacao) => void;
     handleSaveTransacao: (event: React.FormEvent<HTMLFormElement>) => Promise<void>;
     loginFormData: {
         email: string;
         senha: string;
     };
     setLoginFormData: (loginFormData: { email: string; senha: string; }) => void;
+    fetchTransacoes: ReturnType<typeof useQuery>;
 }
 
 const UsuarioContext = createContext<UsuarioContextType>({} as UsuarioContextType);
@@ -43,7 +48,7 @@ export const UsuarioProvider = ({ children }: { children: ReactNode }) => {
     descricao: "",
     data: "",
   });
-
+ 
    const [loginFormData, setLoginFormData] = useState({
     email: "",
     senha: "",
@@ -56,22 +61,18 @@ export const UsuarioProvider = ({ children }: { children: ReactNode }) => {
     setLoginFormData({ ...loginFormData, [name]: value });
   };
 
-  const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
+  useEffect(() => {
+    if (id) {
+      setTransacao({ ...transacao, usuarioId: id });
+    }
+  }, [id]);
+
+ const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-
     try {
-      const response = await fetch("http://localhost:3001/api/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(loginFormData),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-    navigate("/gestao", { state: { nome: data.usuario?.nome || "Usuário", id: data.usuario?.id || 0, email: data.usuario?.email || "" } });
+      const data = await loginUsuario(loginFormData);
+      if (data.usuario) {
+        navigate("/gestao", { state: { nome: data.usuario?.nome || "Usuário", id: data.usuario?.id || 0, email: data.usuario?.email || "" } });
         setLoginFormData({ email: "", senha: "" });
         setTransacao({ ...transacao, usuarioId: data.usuario?.id });
       } else {
@@ -82,27 +83,12 @@ export const UsuarioProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  useEffect(() => {
-    if (id) {
-      setTransacao({ ...transacao, usuarioId: id });
-    }
-  }, [id]);
-
   const handleSaveTransacao = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-
     try {
-      const response = await fetch("http://localhost:3001/api/transacao", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(transacao),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
+      const data = await salvarTransacao(transacao);
+      if (!data || !data.mensagem) throw new Error();
+      if (data.mensagem.toLowerCase().includes("sucesso")) {
         alert("Transação adicionada com sucesso!");
         setTransacao({
           usuarioId: id,
@@ -118,6 +104,14 @@ export const UsuarioProvider = ({ children }: { children: ReactNode }) => {
       alert("Ocorreu um erro ao adicionar a transação.");
     }
   };
+    const fetchTransacoes = useQuery({
+        queryKey: ['transacoes', id],
+        queryFn: () => buscarTransacoes(id),
+        enabled: !!id,
+    });
+
+    console.log(fetchTransacoes.data);
+    console.log(id);
 
     const contextValue: UsuarioContextType = {
         usuario,
@@ -129,7 +123,8 @@ export const UsuarioProvider = ({ children }: { children: ReactNode }) => {
         setTransacao,
         handleSaveTransacao,
         loginFormData,
-        setLoginFormData
+        setLoginFormData,
+        fetchTransacoes,
     };
 
     return (
