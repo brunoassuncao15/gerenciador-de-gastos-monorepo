@@ -5,13 +5,14 @@ import "./styles.css";
 
 
 const Home = () => {
-const { nome, transacao, setTransacao, handleSaveTransacao } = useUsuario();
+const { nome, transacao, setTransacao, handleSaveTransacao, fetchTransacoes } = useUsuario();
 const navigate = useNavigate();
 
   const handleVerTransacoes = () => {
     navigate("/lista-de-transacoes", {
       state: { nome, id: transacao.usuarioId }
     });
+    fetchTransacoes.refetch();
   };
 
   return (
