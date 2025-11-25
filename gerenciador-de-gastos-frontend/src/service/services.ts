@@ -25,3 +25,24 @@ export const buscarTransacoes = async (usuarioId: number) => {
   if (!response.ok) throw new Error("Erro ao carregar transações.");
   return response.json();
 };
+
+export const deletarTransacao = async (transacaoId: number) => {
+  const response = await fetch(`http://localhost:3001/api/transacao/${transacaoId}`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  return response.json();
+};
+
+export const atualizarTransacao = async (transacaoId: number, dadosAtualizados: any) => {
+  const response = await fetch(`http://localhost:3001/api/transacao/${transacaoId}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(dadosAtualizados),
+  });
+  return response.json();
+};

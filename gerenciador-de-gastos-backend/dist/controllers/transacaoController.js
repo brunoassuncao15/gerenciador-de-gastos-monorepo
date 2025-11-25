@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.listarTransacoesPorUsuario = void 0;
+exports.excluirTransacao = exports.editarTransacao = exports.listarTransacoesPorUsuario = void 0;
 exports.registrarTransacao = registrarTransacao;
 const db_1 = __importDefault(require("../db"));
 async function registrarTransacao(req, res) {
@@ -52,3 +52,47 @@ const listarTransacoesPorUsuario = async (req, res) => {
     }
 };
 exports.listarTransacoesPorUsuario = listarTransacoesPorUsuario;
+const editarTransacao = async (req, res) => {
+    const { id } = req.params;
+    const { tipo, valor, descricao, data } = req.body;
+    if (!tipo || !valor || !descricao || !data) {
+        return res.status(400).json({ mensagem: "Todos os campos são obrigatórios." });
+    }
+    let connection;
+    try {
+        connection = await db_1.default.getConnection();
+        const [result] = await connection.execute("UPDATE transacoes SET tipo = ?, valor = ?, descricao = ?, data = ? WHERE id = ?", [tipo, valor, descricao, data, id]);
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ mensagem: "Transação não encontrada." });
+        }
+        res.json({ mensagem: "Transação editada com sucesso!" });
+    }
+    catch (error) {
+        res.status(500).json({ mensagem: "Erro ao editar transação." });
+    }
+    finally {
+        if (connection)
+            connection.release();
+    }
+};
+exports.editarTransacao = editarTransacao;
+const excluirTransacao = async (req, res) => {
+    const { id } = req.params;
+    let connection;
+    try {
+        connection = await db_1.default.getConnection();
+        const [result] = await connection.execute("DELETE FROM transacoes WHERE id = ?", [id]);
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ mensagem: "Transação não encontrada." });
+        }
+        res.json({ mensagem: "Transação excluída com sucesso." });
+    }
+    catch (error) {
+        res.status(500).json({ mensagem: "Erro ao excluir transação." });
+    }
+    finally {
+        if (connection)
+            connection.release();
+    }
+};
+exports.excluirTransacao = excluirTransacao;

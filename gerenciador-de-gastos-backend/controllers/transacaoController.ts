@@ -57,3 +57,55 @@ export const listarTransacoesPorUsuario = async (req: Request, res: Response) =>
     if (connection) connection.release();
   }
 };
+
+export const editarTransacao = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const { tipo, valor, descricao, data } = req.body;
+
+  if (!tipo || !valor || !descricao || !data) {
+    return res.status(400).json({ mensagem: "Todos os campos são obrigatórios." });
+  }
+
+  let connection: any;
+  try {
+    connection = await pool.getConnection();
+
+    const [result]: [any, any] = await connection.execute(
+      "UPDATE transacoes SET tipo = ?, valor = ?, descricao = ?, data = ? WHERE id = ?",
+      [tipo, valor, descricao, data, id]
+    );
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ mensagem: "Transação não encontrada." });
+    }
+
+    res.json({ mensagem: "Transação editada com sucesso!" });
+  } catch (error) {
+    res.status(500).json({ mensagem: "Erro ao editar transação." });
+  } finally {
+    if (connection) connection.release();
+  }
+};
+
+export const excluirTransacao = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  let connection: any;
+  try {
+    connection = await pool.getConnection();
+
+    const [result]: [any, any] = await connection.execute(
+      "DELETE FROM transacoes WHERE id = ?",
+      [id]
+    );
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ mensagem: "Transação não encontrada." });
+    }
+
+    res.json({ mensagem: "Transação excluída com sucesso." });
+  } catch (error) {
+    res.status(500).json({ mensagem: "Erro ao excluir transação." });
+  } finally {
+    if (connection) connection.release();
+  }
+};

@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { buscarTransacoes, loginUsuario, salvarTransacao } from '../service/services';
+import { atualizarTransacao, buscarTransacoes, deletarTransacao, loginUsuario, salvarTransacao } from '../service/services';
 import { useQuery } from '@tanstack/react-query';
 
 interface Usuario {
@@ -33,6 +33,8 @@ interface UsuarioContextType {
     };
     setLoginFormData: (loginFormData: { email: string; senha: string; }) => void;
     fetchTransacoes: ReturnType<typeof useQuery>;
+    deleteTransacao: (transacaoId: number) => Promise<void>;
+    updateTransacao: (transacaoId: number, dadosAtualizados: Partial<Transacao>) => Promise<void>;
 }
 
 const UsuarioContext = createContext<UsuarioContextType>({} as UsuarioContextType);
@@ -104,14 +106,23 @@ export const UsuarioProvider = ({ children }: { children: ReactNode }) => {
       alert("Ocorreu um erro ao adicionar a transação.");
     }
   };
-    const fetchTransacoes = useQuery({
-        queryKey: ['transacoes', id],
-        queryFn: () => buscarTransacoes(id),
-        enabled: !!id,
-    });
 
-    console.log(fetchTransacoes.data);
-    console.log(id);
+  const fetchTransacoes = useQuery({
+      queryKey: ['transacoes', id],
+      queryFn: () => buscarTransacoes(id),
+      enabled: !!id,
+  });
+
+
+  const deleteTransacao = async (transacaoId: number) => {
+      await deletarTransacao(transacaoId);
+      fetchTransacoes.refetch();
+  };
+
+  const updateTransacao = async (transacaoId: number, dadosAtualizados: Partial<Transacao>) => {
+      await atualizarTransacao(transacaoId, dadosAtualizados);
+      fetchTransacoes.refetch();
+  };
 
     const contextValue: UsuarioContextType = {
         usuario,
@@ -122,9 +133,11 @@ export const UsuarioProvider = ({ children }: { children: ReactNode }) => {
         transacao,
         setTransacao,
         handleSaveTransacao,
+        deleteTransacao,
         loginFormData,
         setLoginFormData,
         fetchTransacoes,
+        updateTransacao,
     };
 
     return (
