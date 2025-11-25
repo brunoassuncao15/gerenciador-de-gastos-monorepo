@@ -42,8 +42,8 @@ const ListaTransacoes = () => {
 
   const handleEditar = (transacao: Transacao) => {
     const dataFormatada = transacao.data.slice(0, 10);
-  setTransacaoEditando({ ...transacao, data: dataFormatada });
-  setModalAberto(true);
+    setTransacaoEditando({ ...transacao, data: dataFormatada });
+    setModalAberto(true);
   };
 
   const handleSalvarEdicao = (e: React.FormEvent) => {
