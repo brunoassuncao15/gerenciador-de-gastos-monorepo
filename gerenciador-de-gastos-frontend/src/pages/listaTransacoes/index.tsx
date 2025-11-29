@@ -201,8 +201,8 @@ const ListaTransacoes = () => {
                 <h3>Confirmar exclusão</h3>
                 <p>Tem certeza que deseja excluir a transação <b>{transacaoExcluindo.descricao}</b>?</p>
                 <div style={{ display: "flex", gap: 8 }}>
-                  <button type="button" onClick={handleConfirmarExclusao}>Confirmar</button>
                   <button type="button" onClick={handleCancelarExclusao}>Cancelar</button>
+                  <button type="button" onClick={handleConfirmarExclusao}>Confirmar</button>
                 </div>
               </div>
             </div>
